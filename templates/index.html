@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TherapyBeagle 🐶</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Hi, I’m <span>Beagle 🐾</span></h1>
+        <p class="subtitle">I’m here to chat when you need comfort.</p>
+      </div>
+      <button id="theme-toggle" aria-label="Toggle dark and light theme">🌙</button>
+    </div>
+
+    <div class="chat" aria-live="polite">
+      {% if user_text %}
+        <div class="user-bubble">
+          <div class="bubble-text">You: {{ user_text }}</div>
+          <div class="timestamp">{{ now }}</div>
+        </div>
+      {% endif %}
+
+      {% if is_typing %}
+        <div class="bot-bubble thinking">
+          <div class="typing-dots">
+            <span>.</span><span>.</span><span>.</span>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if bot_reply %}
+        <div class="bot-bubble">
+          <div class="bubble-text beagle-response" data-text="{{ bot_reply|safe }}"></div>
+          <div class="timestamp">{{ now }}</div>
+          <div class="paw" aria-hidden="true">🐾</div>
+        </div>
+      {% endif %}
+    </div>
+
+    <form method="POST" class="chat-form">
+      <input type="text" name="user_text" placeholder="Tell me how you're feeling..." aria-label="Type your message" required />
+      <button type="submit" aria-label="Send message">➤</button>
+    </form>
+
+    <form method="GET" action="/reset">
+      <button class="reset-button" type="submit" aria-label="Reset conversation">Reset Conversation</button>
+    </form>
+
+    <p style="font-size: 0.75rem; color: var(--text); opacity: 0.6; margin-top: 1rem; text-align: center;">
+      Built with Accessibility in Mind
+    </p>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Start TherapyBeagle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='setup.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to TherapyBeagle <span>🐾</span></h2>
+        <p>Would you like to tell Beagle your name?</p>
+
+        <form method="POST">
+            <label for="name">Enter your name:</label><br>
+            <input type="text" name="name" placeholder="e.g. Dev" required>
+            <button class="btn primary-btn" type="submit">Start Chat</button>
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="skip" value="true">
+            <button class="btn secondary-btn" type="submit">Continue as Anonymous</button>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

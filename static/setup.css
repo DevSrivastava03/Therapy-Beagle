@@ -1,0 +1,107 @@
+@import url("https://use.typekit.net/njf7wir.css");
+
+body {
+  font-family: 'itc-avant-garde-gothic-pro', 'Helvetica Neue', Arial, sans-serif;
+  padding: 2rem;
+  background: linear-gradient(135deg, #fefaf6, #dfefff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.container {
+  max-width: 400px;
+  width: 100%;
+  background: white;
+  padding: 2rem;
+  justify-content: center;
+  position: fixed;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  text-align: center;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes pawBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+h2 span {
+  display: inline-block;
+  animation: pawBounce 1.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #666;
+}
+
+form {
+  margin-bottom: 1.2rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #72c5b3;
+  box-shadow: 0 0 8px rgba(114, 197, 179, 0.3);
+}
+
+.btn {
+  width: 100%;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+  border: none;
+}
+
+.primary-btn {
+  background-color: #72c5b3;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.primary-btn:hover {
+  background-color: #5dbca5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: #72c5b3;
+  border: 2px solid #72c5b3;
+}
+
+.secondary-btn:hover {
+  background-color: #f0fdfa;
+  transform: translateY(-2px);
+}
