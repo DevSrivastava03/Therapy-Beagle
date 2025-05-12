@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, jsonify
 import requests
 from datetime import datetime
 import time
 import os
 import json
+import pyttsx3
 
 app = Flask(__name__)
 app.secret_key = 'fluffybeagle2025'
@@ -11,50 +12,16 @@ app.secret_key = 'fluffybeagle2025'
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "llama3.2"
 
-class SessionMemory:
-    def __init__(self, user_id, max_context=6):
-        self.user_id = user_id
-        self.memory_file = f"sessions/{user_id}.json"
-        self.max_context = max_context
-        self.messages = []
-        self.profile = {"name": None, "emotion_tags": [], "themes": []}
-        self.load()
+engine = pyttsx3.init()
+engine.setProperty('rate', 150)
+engine.setProperty('volume', 1)
 
-    def add_message(self, role, content):
-        self.messages.append({"role": role, "content": content})
-        self.messages = self.messages[-self.max_context:]
-
-    def set_profile(self, key, value):
-        self.profile[key] = value
-
-    def add_emotion_tag(self, tag):
-        if tag not in self.profile["emotion_tags"]:
-            self.profile["emotion_tags"].append(tag)
-
-    def add_theme(self, theme):
-        if theme not in self.profile["themes"]:
-            self.profile["themes"].append(theme)
-
-    def load(self):
-        if os.path.exists(self.memory_file):
-            with open(self.memory_file, 'r') as f:
-                data = json.load(f)
-                self.messages = data.get("messages", [])
-                self.profile = data.get("profile", self.profile)
-
-    def save(self):
-        os.makedirs("sessions", exist_ok=True)
-        with open(self.memory_file, 'w') as f:
-            json.dump({"messages": self.messages, "profile": self.profile}, f, indent=2)
-
-    def get_context(self):
-        profile_summary = f"User name: {self.profile['name'] or 'Unknown'}\n"
-        profile_summary += f"Themes: {', '.join(self.profile['themes'])}\n"
-        profile_summary += f"Emotion tags: {', '.join(self.profile['emotion_tags'])}\n"
-        context = profile_summary + "\n"
-        for msg in self.messages:
-            context += f"{msg['role'].capitalize()}: {msg['content']}\n"
-        return context
+def convert_text_to_speech(text):
+    try:
+        engine.say(text)
+        engine.runAndWait()
+    except Exception as e:
+        print(f"Error in text-to-speech: {e}")
 
 def query_ollama(prompt, max_tokens=150):
     payload = {
@@ -65,7 +32,7 @@ def query_ollama(prompt, max_tokens=150):
             "temperature": 0.7,
             "top_p": 0.9,
             "repeat_penalty": 1.2,
-            "num_predict": max_tokens  
+            "num_predict": max_tokens
         }
     }
     response = requests.post(OLLAMA_URL, json=payload)
@@ -73,34 +40,13 @@ def query_ollama(prompt, max_tokens=150):
         return response.json()['response'].strip()
     else:
         return f"Error: {response.status_code}"
-    
-    response = requests.post(OLLAMA_URL, json=payload)
-    return response.json()['response'].strip() if response.status_code == 200 else f"Error: {response.status_code}"
-
-@app.route('/setup', methods=['GET', 'POST'])
-def setup():
-    user_id = request.remote_addr
-    session["user_id"] = user_id
-    memory = SessionMemory(user_id)
-
-    if request.method == 'POST':
-        if 'skip' in request.form:
-            memory.set_profile('name', 'Anonymous')
-        else:
-            name = request.form.get('name', 'Anonymous')
-            memory.set_profile('name', name)
-        memory.save()
-        return redirect('/')
-
-    return render_template('setup.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if "user_id" not in session:
-        return redirect('/setup')
-
-    user_id = session["user_id"]
-    memory = SessionMemory(user_id)
+        session["user_id"] = request.remote_addr
+    if "voice_enabled" not in session:
+        session["voice_enabled"] = True
 
     bot_reply = ""
     user_text = ""
@@ -109,24 +55,22 @@ def index():
 
     if request.method == 'POST':
         user_text = request.form.get('user_text')
-        if user_text:
-            memory.add_message("user", user_text)
-            if any(word in user_text.lower() for word in ["grief", "sad", "depressed"]):
-                memory.add_emotion_tag("grief")
-                memory.add_theme("loss")
 
+        if user_text:
             prompt = (
                 "You are Beagle 🐶, a kind, supportive, emotionally intelligent dog friend. "
                 "You speak with warmth and comfort, gently helping the user reflect.\n\n"
-                f"{memory.get_context()}Beagle:"
+                f"User: {user_text}\nBeagle:"
             )
 
             is_typing = True
-            time.sleep(1.5) 
+            time.sleep(1.5)
 
             bot_reply = query_ollama(prompt)
-            memory.add_message("Beagle", bot_reply)
-            memory.save()
+
+            # Only speak if voice is enabled
+            if session.get("voice_enabled"):
+                convert_text_to_speech(bot_reply)
 
     return render_template('index.html',
                            bot_reply=bot_reply,
@@ -134,15 +78,19 @@ def index():
                            now=now,
                            is_typing=is_typing)
 
+@app.route('/toggle_voice', methods=['POST'])
+def toggle_voice():
+    session["voice_enabled"] = not session.get("voice_enabled", True)
+    return jsonify({"voice_enabled": session["voice_enabled"]})
+
 @app.route('/reset')
 def reset():
-    if "user_id" in session:
-        user_id = session["user_id"]
-        memory_file = f"sessions/{user_id}.json"
-        if os.path.exists(memory_file):
-            os.remove(memory_file)
     session.clear()
-    return redirect('/setup')
+    return render_template('index.html',
+                           bot_reply="",
+                           user_text="",
+                           now=datetime.now().strftime('%I:%M %p'),
+                           is_typing=False)
 
 if __name__ == '__main__':
     app.run(debug=True)

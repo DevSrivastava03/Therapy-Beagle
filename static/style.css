@@ -63,6 +63,28 @@ h1 span {
   background: var(--bubble-user);
 }
 
+/* Toggle Button Styling */
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.toggle-btn:hover {
+  background-color: var(--accent);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.toggle-btn:active {
+  transform: scale(0.95);
+}
+
 /* Typing Effect */
 .typing-dots {
   display: inline-block;
@@ -111,6 +133,11 @@ h1 span {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.chat-form button:hover {
+  background-color: #5da89d;
 }
 
 .reset-button {
@@ -121,6 +148,21 @@ h1 span {
   font-size: 0.9rem;
   cursor: pointer;
   color: var(--text);
+}
+
+.reset-button:hover {
+  background: #f3c7a8;
+}
+
+/* Info Box */
+.info {
+  background-color: #f4f4f8;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  color: #666;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 /* Typing Animation */

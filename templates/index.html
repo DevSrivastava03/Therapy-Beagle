@@ -8,14 +8,17 @@
 </head>
 <body>
   <div class="container">
+    <!-- Header -->
     <div class="header">
       <div>
         <h1>Hi, I’m <span>Beagle 🐾</span></h1>
         <p class="subtitle">I’m here to chat when you need comfort.</p>
       </div>
-      <button id="theme-toggle" aria-label="Toggle dark and light theme">🌙</button>
+      <button id="voice-toggle" class="toggle-btn" aria-label="Toggle voice output">🔊</button>
+      <button id="theme-toggle" class="toggle-btn" aria-label="Toggle theme">🌙</button>
     </div>
 
+    <!-- Chat area -->
     <div class="chat" aria-live="polite">
       {% if user_text %}
         <div class="user-bubble">
@@ -34,25 +37,18 @@
 
       {% if bot_reply %}
         <div class="bot-bubble">
-          <div class="bubble-text beagle-response" data-text="{{ bot_reply|safe }}"></div>
+          <div class="bubble-text">{{ bot_reply }}</div>
           <div class="timestamp">{{ now }}</div>
           <div class="paw" aria-hidden="true">🐾</div>
         </div>
       {% endif %}
     </div>
 
+    <!-- Message form -->
     <form method="POST" class="chat-form">
-      <input type="text" name="user_text" placeholder="Tell me how you're feeling..." aria-label="Type your message" required />
-      <button type="submit" aria-label="Send message">➤</button>
+      <input type="text" name="user_text" placeholder="Tell me how you're feeling..." required />
+      <button type="submit">➤</button>
     </form>
-
-    <form method="GET" action="/reset">
-      <button class="reset-button" type="submit" aria-label="Reset conversation">Reset Conversation</button>
-    </form>
-
-    <p style="font-size: 0.75rem; color: var(--text); opacity: 0.6; margin-top: 1rem; text-align: center;">
-      Built with Accessibility in Mind
-    </p>
   </div>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
