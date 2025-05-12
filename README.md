@@ -19,3 +19,8 @@ Customizable theme for a more comfortable user experience.
 
 Accessibility-Focused UI:
 Simple, clean, and designed with accessibility in mind.
+<img width="688" alt="Screenshot 2025-05-12 at 7 07 08 PM" src="https://github.com/user-attachments/assets/59691187-1456-45da-a987-f23731ad2afd" />
+
+<img width="618" alt="Screenshot 2025-05-12 at 7 07 41 PM" src="https://github.com/user-attachments/assets/ca205a6d-f852-49e1-95b3-13516b2d6c2a" />
+
+<img width="723" alt="Screenshot 2025-05-12 at 7 10 11 PM" src="https://github.com/user-attachments/assets/56f1c776-75dd-450d-9237-4a6a818598b0" />
